@@ -16,7 +16,7 @@ dependencycheck() {
     fi
 }
 
-dependencycheck sudo chown cp chmod mkdir
+dependencycheck sudo rm
 
 function removelsc() {
     if [[ -f /usr/local/bin/lsc ]] ; then

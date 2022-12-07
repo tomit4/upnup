@@ -17,7 +17,7 @@ dependencycheck() {
     fi
 }
 
-dependencycheck sudo chown cp chmod mkdir date awk sed find sort
+dependencycheck sudo chown cp chmod mkdir date awk sed rm find sort
 
 function changeowner() {
         if command -v "doas" &> /dev/null ; then

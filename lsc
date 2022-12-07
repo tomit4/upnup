@@ -43,14 +43,10 @@ main () {
                     exit 1
                 fi
                 if [[ " ${mod_list[*]} " =~ ${args[$j]} ]]; then
-                    if ! command -v sponge &> /dev/null ; then
-                        printf "%s\n" "dependency not met: sponge"
-                        printf "%s\n" "please install moreutils package"
-                        exit 1
-                    fi
-                    cp "$HOME"/.config/lsc/licenses/"${args[$j]}" ./LICENSE
-                    sed "0,/\[year\]/s/\[year\]/$year/" ./LICENSE | sponge ./LICENSE
-                    sed "0,/\[fullname\]/s/\[fullname\]/$user/" ./LICENSE | sponge ./LICENSE
+                    cp "$HOME"/.config/lsc/licenses/"${args[$j]}" ./tmp
+                    sed "0,/\[year\]/s/\[year\]/$year/" ./tmp > tmp2
+                    sed "0,/\[fullname\]/s/\[fullname\]/$user/" ./tmp2 > LICENSE
+                    rm tmp tmp2
                 else
                     cp "$HOME"/.config/lsc/licenses/"${args[$j]}" ./LICENSE
                 fi
