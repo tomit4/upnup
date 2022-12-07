@@ -1,8 +1,8 @@
-# license
-license is a bash version of [Safia Abdalla's legit](https://github.com/captainsafia/legit)
+# lcs
+lcs is a bash version of [Safia Abdalla's legit](https://github.com/captainsafia/legit)
 ### Usage
 ```
-  Usage: license [options] [command]
+  Usage: lcs [options] [command]
 
 
   Commands:
