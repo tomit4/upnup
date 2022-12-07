@@ -39,11 +39,11 @@ main () {
                 printf "%s\n" "error: missing required argument \`license'"
                 exit 1
             else
-                if [[ ! "${lcs_list[*]}" =~ ${args[$j]} ]]; then
+                if [[ ! "${lcs_list[*]}" =~ ${args[$j]} ]] ; then
                     printf "%s\n" "error: ${args[$j]} is not an included \`license"
                     exit 1
                 fi
-                if [[ "${mod_list[*]}" =~ ${args[$j]} ]]; then
+                if [[ "${mod_list[*]}" =~ ${args[$j]} ]] ; then
                     cp "$HOME"/.config/lcs/licenses/"${args[$j]}" ./tmp
                     sed "0,/\[year\]/s/\[year\]/$year/" ./tmp > tmp2
                     sed "0,/\[fullname\]/s/\[fullname\]/$user/" ./tmp2 > LICENSE
