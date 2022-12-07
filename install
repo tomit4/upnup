@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# depends on moreutils for sponge
 set -e
 
 function changeowner() {

@@ -1,16 +1,62 @@
 #!/usr/bin/env bash
 set -e
 
-# year=$(date | awk -F ' ' '{print $7}')
-# user=$USER
-# echo "$year"
-# echo "$user"
+printhelp () {
+    printf "%s\n" "Usage: license [options] [command]"
+    printf "%s\n" ""
+    printf "%s\n" "Options:"
+    printf "%s\n" "  -V, --version              output the version number"
+    printf "%s\n" "  -h, --help                 output usage information"
+    printf "%s\n" ""
+    printf "%s\n" "Commands:"
+    printf "%s\n" "  list|l                     List all available licenses"
+    printf "%s\n" "  put|p [options] <license>  Put a license in this directory"
+    exit 0
+}
 
-if [[ $1 == 'l' || $1 == 'list' ]] ; then
-    lice="$(/usr/bin/ls -l "$HOME"/.config/license/licenses | awk -F ' ' '{print $9}')"
-    echo "$lice" | sed 1d
-fi
+main () {
+    args=("$@")
+    user=$USER
+    year=$(date | awk -F ' ' '{print $7}')
 
-if [[ $1 == 'p' || $1 == 'put' ]] ; then
-    cp "$HOME"/.config/license/licenses/"$2" ./LICENSE
-fi
+    if [[ $# -lt 1 ]] ; then
+        printhelp
+    fi
+
+    for (( i=0; i < $#; i++)) ; do
+        j=$((i+1))
+
+        if [[ "${args[$i]}" == 'l' || "${args[$i]}" == 'list' ]] ; then
+            license_list="$(/usr/bin/ls -l "$HOME"/.config/license/licenses | awk -F ' ' '{print $9}')"
+            printf "%s\n" "$license_list" | sed 1d
+            exit 0
+
+        elif [[ "${args[$i]}" == '-u' || "${args[$i]}" == '--user' ]] ; then
+            user="${args[$j]}"
+
+        elif [[ "${args[$i]}" == '-y' || "${args[$i]}" == '--year' ]] ; then
+            year="${args[$j]}"
+
+        elif [[ "${args[$i]}" == 'p' || "${args[$i]}" == 'put' ]] ; then
+            if [ $j == '' ] ; then
+                printf "%s\n" "error: missing required argument \`license'"
+                exit 1
+            else
+                cp "$HOME"/.config/license/licenses/"${args[$j]}" ./LICENSE
+                sed "0,/\[year\]/s/\[year\]/$year/" ./LICENSE | sponge ./LICENSE
+                sed "0,/\[fullname\]/s/\[fullname\]/$user/" ./LICENSE | sponge ./LICENSE
+            exit 0
+            fi
+
+        elif [[ "${args[$i]}" == '-h' || "${args[$i]}" == '--help' ]] ; then
+            printhelp
+
+        elif [[ "${args[$i]}" == '-V' || "${args[$i]}" == '--version' ]] ; then
+            printf "%s\n" "0.0.1" & exit 0
+
+        fi
+
+    done
+}
+
+main "$@"
