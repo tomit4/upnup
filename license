@@ -1,0 +1,16 @@
+#!/bin/bash
+set -e
+
+# year=$(date | awk -F ' ' '{print $7}')
+# user=$USER
+# echo "$year"
+# echo "$user"
+
+if [[ $1 == 'l' || $1 == 'list' ]] ; then
+    lice="$(/usr/bin/ls -l "$HOME"/.config/license/licenses | awk -F ' ' '{print $9}')"
+    echo "$lice" | sed 1d
+fi
+
+if [[ $1 == 'p' || $1 == 'put' ]] ; then
+    cp "$HOME"/.config/license/licenses/"$2" ./LICENSE
+fi
