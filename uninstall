@@ -18,40 +18,40 @@ dependencycheck() {
 
 dependencycheck sudo rm
 
-function removelcs() {
-    if [[ -f /usr/local/bin/lcs ]] ; then
+function removeupnup() {
+    if [[ -f /usr/local/bin/upnup ]] ; then
         if command -v "doas" &> /dev/null ; then
-            doas rm /usr/local/bin/lcs
-            printf "%s\n" "removing /usr/local/bin/lcs ..."
+            doas rm /usr/local/bin/upnup
+            printf "%s\n" "removing /usr/local/bin/upnup ..."
         else
-            sudo rm /usr/local/bin/lcs
-            printf "%s\n" "removing /usr/local/bin/lcs ..."
+            sudo rm /usr/local/bin/upnup
+            printf "%s\n" "removing /usr/local/bin/upnup ..."
         fi
     fi
 }
 
 function removeconfig() {
-    if [[ -d "$HOME/.config/lcs/" ]] ; then
-        printf "%s\n" "removing ~/.config/lcs ..."
+    if [[ -d "$HOME/.config/upnup/" ]] ; then
+        printf "%s\n" "removing ~/.config/upnup ..."
         if command -v "doas" &> /dev/null ; then
-            doas rm -r "$HOME"/.config/lcs
+            doas rm -r "$HOME"/.config/upnup
         else
-            sudo rm -r "$HOME"/.config/lcs
+            sudo rm -r "$HOME"/.config/upnup
         fi
     fi
 }
 
 # function removeman() {
-    # if [[ -f "/usr/share/man/man1/lcs.1.gz" ]] ; then
-        # printf "%s\n" "removing man page /usr/share/man/man1/lcs.1.gz ..."
+    # if [[ -f "/usr/share/man/man1/upnup.1.gz" ]] ; then
+        # printf "%s\n" "removing man page /usr/share/man/man1/upnup.1.gz ..."
         # if command -v "doas" &> /dev/null ; then
-            # doas rm /usr/share/man/man1/lcs.1.gz
+            # doas rm /usr/share/man/man1/upnup.1.gz
         # else
-            # sudo rm /usr/share/man/man1/lcs.1.gz
+            # sudo rm /usr/share/man/man1/upnup.1.gz
         # fi
     # fi
 # }
 
-removelcs
+removeupnup
 removeconfig
 # removeman

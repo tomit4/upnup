@@ -2,7 +2,7 @@
 set -e
 
 printhelp () {
-    printf "%s\n" "Usage: lcs [options] [command]"
+    printf "%s\n" "Usage: upnup [options] [command]"
     printf "%s\n" ""
     printf "%s\n" "Options:"
     printf "%s\n" "  -V, --version              output the version number"
@@ -18,7 +18,7 @@ main () {
     args=("$@")
     user=$USER
     year=$(date | awk -F ' ' '{ print $7 }')
-    license_list="$(find "$HOME"/.config/lcs/licenses | sed 1d | awk -F '/' '{ print $7 }' | sort)"
+    license_list="$(find "$HOME"/.config/upnup/licenses | sed 1d | awk -F '/' '{ print $7 }' | sort)"
     lcs_list=( agpl-3.0 apache-2.0 bsd-2-clause bsd-3-clause bsl-1.0 cc0-1.0 cc0-3.0 cc0-4.0 epl-2.0 gpl-2.0 gpl-3.0 lgpl-2.1 mit mpl-2.0 unlicense )
     mod_list=( agpl-3.0 bsd-2-clause bsd-3-clause mit )
 
@@ -44,12 +44,12 @@ main () {
                     exit 1
                 fi
                 if [[ "${mod_list[*]}" =~ ${args[$j]} ]] ; then
-                    cp "$HOME"/.config/lcs/licenses/"${args[$j]}" ./tmp
+                    cp "$HOME"/.config/upnup/licenses/"${args[$j]}" ./tmp
                     sed "0,/\[year\]/s/\[year\]/$year/" ./tmp > tmp2
                     sed "0,/\[fullname\]/s/\[fullname\]/$user/" ./tmp2 > LICENSE
                     rm tmp tmp2
                 else
-                    cp "$HOME"/.config/lcs/licenses/"${args[$j]}" ./LICENSE
+                    cp "$HOME"/.config/upnup/licenses/"${args[$j]}" ./LICENSE
                 fi
             exit 0
             fi

@@ -1,8 +1,8 @@
-# lcs
-lcs is a bash version of [Safia Abdalla's legit](https://github.com/captainsafia/legit)
+# upnup
+upnup is a bash version of [Safia Abdalla's legit](https://github.com/captainsafia/legit)
 ### Usage
 ```
-  Usage: lcs [options] [command]
+  Usage: upnup [options] [command]
 
 
   Commands:
