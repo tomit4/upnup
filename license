@@ -58,7 +58,7 @@ main () {
             fi
 
         elif [[ "${args[$i]}" == 'l' || "${args[$i]}" == 'list' ]] ; then
-            license_list="$(find "$HOME"/.config/license/licenses | sed 1d | awk -F '/' '{ print $7 }')"
+            license_list="$(find "$HOME"/.config/license/licenses | sed 1d | awk -F '/' '{ print $7 }' | sort)"
             printf "%s\n" "$license_list"
             exit 0
 
