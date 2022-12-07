@@ -61,8 +61,8 @@ main () {
         elif [[ "${args[$i]}" == '-h' || "${args[$i]}" == '--help' ]] ; then
             printhelp
         elif [[ "${args[$i]}" == '-V' || "${args[$i]}" == '--version' ]] ; then
-            printf "%s\n" "0.0.1" & exit 0
-
+            printf "%s\n" "0.0.1"
+            exit 0
         fi
     done
 }
