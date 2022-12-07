@@ -2,7 +2,7 @@
 set -e
 
 printhelp () {
-    printf "%s\n" "Usage: license [options] [command]"
+    printf "%s\n" "Usage: lsc [options] [command]"
     printf "%s\n" ""
     printf "%s\n" "Options:"
     printf "%s\n" "  -V, --version              output the version number"
