@@ -25,8 +25,8 @@ main () {
         printhelp
     fi
 
-    for (( i=0; i < $#; i++)) ; do
-        j=$((i+1))
+    for (( i = 0; i < $#; i++ )) ; do
+        j=$((i + 1))
 
         if [[ "${args[$i]}" == '-u' || "${args[$i]}" == '--user' ]] ; then
             user="${args[$j]}"
