@@ -18,40 +18,40 @@ dependencycheck() {
 
 dependencycheck sudo chown cp chmod mkdir
 
-function removelicense() {
-    if [[ -f /usr/local/bin/license ]] ; then
+function removelsc() {
+    if [[ -f /usr/local/bin/lsc ]] ; then
         if command -v "doas" &> /dev/null ; then
-            doas rm /usr/local/bin/license
-            printf "%s\n" "removing /usr/local/bin/license ..."
+            doas rm /usr/local/bin/lsc
+            printf "%s\n" "removing /usr/local/bin/lsc ..."
         else
-            sudo rm /usr/local/bin/license
-            printf "%s\n" "removing /usr/local/bin/license ..."
+            sudo rm /usr/local/bin/lsc
+            printf "%s\n" "removing /usr/local/bin/lsc ..."
         fi
     fi
 }
 
 function removeconfig() {
-    if [[ -d "$HOME/.config/license/" ]] ; then
-        printf "%s\n" "removing ~/.config/license ..."
+    if [[ -d "$HOME/.config/lsc/" ]] ; then
+        printf "%s\n" "removing ~/.config/lsc ..."
         if command -v "doas" &> /dev/null ; then
-            doas rm -r "$HOME"/.config/license
+            doas rm -r "$HOME"/.config/lsc
         else
-            sudo rm -r "$HOME"/.config/license
+            sudo rm -r "$HOME"/.config/lsc
         fi
     fi
 }
 
 # function removeman() {
-    # if [[ -f "/usr/share/man/man1/license.1.gz" ]] ; then
-        # printf "%s\n" "removing man page /usr/share/man/man1/license.1.gz ..."
+    # if [[ -f "/usr/share/man/man1/lsc.1.gz" ]] ; then
+        # printf "%s\n" "removing man page /usr/share/man/man1/lsc.1.gz ..."
         # if command -v "doas" &> /dev/null ; then
-            # doas rm /usr/share/man/man1/license.1.gz
+            # doas rm /usr/share/man/man1/lsc.1.gz
         # else
-            # sudo rm /usr/share/man/man1/license.1.gz
+            # sudo rm /usr/share/man/man1/lsc.1.gz
         # fi
     # fi
 # }
 
-removelicense
+removelsc
 removeconfig
 # removeman

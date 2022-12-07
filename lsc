@@ -18,7 +18,7 @@ main () {
     args=("$@")
     user=$USER
     year=$(date | awk -F ' ' '{ print $7 }')
-    lic_list=( agpl-3.0 apache-2.0 bsd-2-clause bsd-3-clause bsl-1.0 cc0-1.0 cc0-3.0 cc0-4.0 epl-2.0 gpl-2.0 gpl-3.0 lgpl-2.1 mit mpl-2.0 unlicense )
+    lsc_list=( agpl-3.0 apache-2.0 bsd-2-clause bsd-3-clause bsl-1.0 cc0-1.0 cc0-3.0 cc0-4.0 epl-2.0 gpl-2.0 gpl-3.0 lgpl-2.1 mit mpl-2.0 unlicense )
     mod_list=( agpl-3.0 bsd-2-clause bsd-3-clause mit )
 
     if [[ $# -lt 1 ]] ; then
@@ -38,7 +38,7 @@ main () {
                 printf "%s\n" "error: missing required argument \`license'"
                 exit 1
             else
-                if [[ ! " ${lic_list[*]} " =~ ${args[$j]} ]]; then
+                if [[ ! " ${lsc_list[*]} " =~ ${args[$j]} ]]; then
                     printf "%s\n" "error: ${args[$j]} is not an included \`license"
                     exit 1
                 fi
@@ -48,17 +48,17 @@ main () {
                         printf "%s\n" "please install moreutils package"
                         exit 1
                     fi
-                    cp "$HOME"/.config/license/licenses/"${args[$j]}" ./LICENSE
+                    cp "$HOME"/.config/lsc/licenses/"${args[$j]}" ./LICENSE
                     sed "0,/\[year\]/s/\[year\]/$year/" ./LICENSE | sponge ./LICENSE
                     sed "0,/\[fullname\]/s/\[fullname\]/$user/" ./LICENSE | sponge ./LICENSE
                 else
-                    cp "$HOME"/.config/license/licenses/"${args[$j]}" ./LICENSE
+                    cp "$HOME"/.config/lsc/licenses/"${args[$j]}" ./LICENSE
                 fi
             exit 0
             fi
 
         elif [[ "${args[$i]}" == 'l' || "${args[$i]}" == 'list' ]] ; then
-            license_list="$(find "$HOME"/.config/license/licenses | sed 1d | awk -F '/' '{ print $7 }' | sort)"
+            license_list="$(find "$HOME"/.config/lsc/licenses | sed 1d | awk -F '/' '{ print $7 }' | sort)"
             printf "%s\n" "$license_list"
             exit 0
 

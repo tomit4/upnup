@@ -27,43 +27,43 @@ function changeowner() {
         fi
 }
 
-function install_license() {
-    if [[ ! -f /usr/local/bin/license ]] ; then
-        printf "%s\n" 'installing license to /usr/local/bin ...'
+function install_lsc() {
+    if [[ ! -f /usr/local/bin/lsc ]] ; then
+        printf "%s\n" 'installing lsc to /usr/local/bin ...'
         if command -v "doas" &> /dev/null ; then
-            doas cp license /usr/local/bin/
-            doas chmod 755 /usr/local/bin/license
+            doas cp lsc /usr/local/bin/
+            doas chmod 755 /usr/local/bin/lsc
         else
-            sudo cp license /usr/local/bin/
-            sudo chmod 755 /usr/local/bin/license
+            sudo cp lsc /usr/local/bin/
+            sudo chmod 755 /usr/local/bin/lsc
         fi
     else
-        read -e -r -p "license already installed, would you like to reinstall?(y/n): " reinstall
+        read -e -r -p "lsc already installed, would you like to reinstall?(y/n): " reinstall
         if [[ $reinstall == "y" || $reinstall == "yes" ]] ; then
             if command -v "doas" &> /dev/null ; then
-                doas cp license /usr/local/bin/
-                doas chmod 755 /usr/local/bin/license
+                doas cp lsc /usr/local/bin/
+                doas chmod 755 /usr/local/bin/lsc
             else
-                sudo cp license /usr/local/bin/
-                sudo chmod 755 /usr/local/bin/license
+                sudo cp lsc /usr/local/bin/
+                sudo chmod 755 /usr/local/bin/lsc
             fi
         else
-            printf "%s\n" "install script exiting, no changes were made to license."
+            printf "%s\n" "install script exiting, no changes were made to lsc."
         fi
     fi
 }
 
 function createconfig() {
-    if [[ ! -d "$HOME/.config/license/" ]] ; then
-        printf "%s\n" "installing configuration files in directory ~/.config/license/ ..."
-        mkdir -p "$HOME"/.config/license/licenses
-        cp -r licenses "$HOME"/.config/license/
-        cp -r headers "$HOME"/.config/license/
+    if [[ ! -d "$HOME/.config/lsc/" ]] ; then
+        printf "%s\n" "installing configuration files in directory ~/.config/lsc/ ..."
+        mkdir -p "$HOME"/.config/lsc/lscs
+        cp -r licenses "$HOME"/.config/lsc/
+        cp -r headers "$HOME"/.config/lsc/
     else
-        read -e -r -p "\~/.config/license directory already exists, would you like to overwrite configuration files?(y/n): " replaceconfig
+        read -e -r -p "\~/.config/lsc directory already exists, would you like to overwrite configuration files?(y/n): " replaceconfig
         if [[ $replaceconfig == "y" || $replaceconfig == "yes" ]] ; then
-            cp -r licenses "$HOME"/.config/license/
-            cp -r headers "$HOME"/.config/license/
+            cp -r licenses "$HOME"/.config/lsc/
+            cp -r headers "$HOME"/.config/lsc/
         else
             printf "%s\n" "install script exiting, no updates to configuration have been made ..."
             exit 0
@@ -75,17 +75,17 @@ function createconfig() {
     # if [[ -d "/usr/share/man/man1" ]] ; then
         # printf "%s\n" "installing man page in /usr/share/man/man1 ..."
         # if command -v "doas" &> /dev/null ; then
-            # doas cp man_page/license.1.gz /usr/share/man/man1/
+            # doas cp man_page/lsc.1.gz /usr/share/man/man1/
         # else
-            # sudo cp man_page/license.1.gz /usr/share/man/man1/
+            # sudo cp man_page/lsc.1.gz /usr/share/man/man1/
         # fi
     # else
-        # printf "%s\n" "/usr/share/man/man1 doesn't exist, copy license.1.gz to preferred man page directory manually"
+        # printf "%s\n" "/usr/share/man/man1 doesn't exist, copy lsc.1.gz to preferred man page directory manually"
         # exit 0
     # fi
 # }
 
 changeowner
-install_license
+install_lsc
 createconfig
 # installman
