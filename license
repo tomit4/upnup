@@ -17,7 +17,7 @@ printhelp () {
 main () {
     args=("$@")
     user=$USER
-    year=$(date | awk -F ' ' '{print $7}')
+    year=$(date | awk -F ' ' '{ print $7 }')
     lic_list=( agpl-3.0 apache-2.0 bsd-2-clause bsd-3-clause bsl-1.0 cc0-1.0 cc0-3.0 cc0-4.0 epl-2.0 gpl-2.0 gpl-3.0 lgpl-2.1 mit mpl-2.0 unlicense )
     mod_list=( agpl-3.0 bsd-2-clause bsd-3-clause mit )
 
@@ -58,8 +58,8 @@ main () {
             fi
 
         elif [[ "${args[$i]}" == 'l' || "${args[$i]}" == 'list' ]] ; then
-            license_list="$(/usr/bin/ls -l "$HOME"/.config/license/licenses | awk -F ' ' '{print $9}')"
-            printf "%s\n" "$license_list" | sed 1d
+            license_list="$(find "$HOME"/.config/license/licenses | sed 1d | awk -F '/' '{ print $7 }')"
+            printf "%s\n" "$license_list"
             exit 0
 
         elif [[ "${args[$i]}" == '-h' || "${args[$i]}" == '--help' ]] ; then
