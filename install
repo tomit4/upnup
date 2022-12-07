@@ -2,17 +2,34 @@
 # depends on moreutils for sponge
 set -e
 
+dependencycheck() {
+    numdependencies="$#"
+    dependencies=("$@")
+    missingdependencies=0
+    for ((i = 0; i < numdependencies; i++)) ; do
+        if ! command -v "${dependencies[$i]}" &> /dev/null ; then
+            printf "dependency not met: %s\n" "${dependencies[$i]}"
+            missingdependencies=$((missingdependencies+1))
+        fi
+    done
+    if [ $missingdependencies -gt 0 ]; then
+        exit 1
+    fi
+}
+
+dependencycheck sudo chown cp chmod mkdir
+
 function changeowner() {
         if command -v "doas" &> /dev/null ; then
-            doas chown -R $USER:$USER ./*
+            doas chown -R "$USER":"$USER" ./*
         else
-            sudo chown -R $USER:$USER ./*
+            sudo chown -R "$USER":"$USER" ./*
         fi
 }
 
 function install_license() {
     if [[ ! -f /usr/local/bin/license ]] ; then
-        echo 'installing license to /usr/local/bin ...'
+        printf "%s\n" 'installing license to /usr/local/bin ...'
         if command -v "doas" &> /dev/null ; then
             doas cp license /usr/local/bin/
             doas chmod 755 /usr/local/bin/license
@@ -31,24 +48,24 @@ function install_license() {
                 sudo chmod 755 /usr/local/bin/license
             fi
         else
-            echo "install script exiting, no changes were made to license."
+            printf "%s\n" "install script exiting, no changes were made to license."
         fi
     fi
 }
 
 function createconfig() {
     if [[ ! -d "$HOME/.config/license/" ]] ; then
-        echo "installing configuration files in directory ~/.config/license/ ..."
-        mkdir -p $HOME/.config/license/licenses
-        cp -r licenses $HOME/.config/license/
-        cp -r headers $HOME/.config/license/
+        printf "%s\n" "installing configuration files in directory ~/.config/license/ ..."
+        mkdir -p "$HOME"/.config/license/licenses
+        cp -r licenses "$HOME"/.config/license/
+        cp -r headers "$HOME"/.config/license/
     else
         read -e -r -p "\~/.config/license directory already exists, would you like to overwrite configuration files?(y/n): " replaceconfig
         if [[ $replaceconfig == "y" || $replaceconfig == "yes" ]] ; then
-            cp -r licenses $HOME/.config/license/
-            cp -r headers $HOME/.config/license/
+            cp -r licenses "$HOME"/.config/license/
+            cp -r headers "$HOME"/.config/license/
         else
-            echo "install script exiting, no updates to configuration have been made ..."
+            printf "%s\n" "install script exiting, no updates to configuration have been made ..."
             exit 0
         fi
     fi
@@ -56,14 +73,14 @@ function createconfig() {
 
 # function installman() {
     # if [[ -d "/usr/share/man/man1" ]] ; then
-        # echo "installing man page in /usr/share/man/man1 ..."
+        # printf "%s\n" "installing man page in /usr/share/man/man1 ..."
         # if command -v "doas" &> /dev/null ; then
             # doas cp man_page/license.1.gz /usr/share/man/man1/
         # else
             # sudo cp man_page/license.1.gz /usr/share/man/man1/
         # fi
     # else
-        # echo "/usr/share/man/man1 doesn't exist, copy license.1.gz to preferred man page directory manually"
+        # printf "%s\n" "/usr/share/man/man1 doesn't exist, copy license.1.gz to preferred man page directory manually"
         # exit 0
     # fi
 # }

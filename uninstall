@@ -1,5 +1,22 @@
-#!/usr/bin/env/ bash
+#!/usr/bin/env bash
 set -e
+
+dependencycheck() {
+    numdependencies="$#"
+    dependencies=("$@")
+    missingdependencies=0
+    for ((i = 0; i < numdependencies; i++)) ; do
+        if ! command -v "${dependencies[$i]}" &> /dev/null ; then
+            printf "dependency not met: %s\n" "${dependencies[$i]}"
+            missingdependencies=$((missingdependencies+1))
+        fi
+    done
+    if [ $missingdependencies -gt 0 ]; then
+        exit 1
+    fi
+}
+
+dependencycheck sudo chown cp chmod mkdir
 
 function removelicense() {
     if [[ -f /usr/local/bin/license ]] ; then
@@ -17,9 +34,9 @@ function removeconfig() {
     if [[ -d "$HOME/.config/license/" ]] ; then
         echo "removing ~/.config/license ..."
         if command -v "doas" &> /dev/null ; then
-            doas rm -r $HOME/.config/license
+            doas rm -r "$HOME"/.config/license
         else
-            sudo rm -r $HOME/.config/license
+            sudo rm -r "$HOME"/.config/license
         fi
     fi
 }
