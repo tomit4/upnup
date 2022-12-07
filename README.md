@@ -27,7 +27,7 @@ license is a bash version of [Safia Abdalla's legit](https://github.com/captains
     -y --year [year]  The year the license is in effect
 ```
 ##### Checklist
-- [ ] Get the above options working
+- [x] Get the above options working
 - [ ] Comments for headers will be somewhat difficult, see [Safia's
 commentator](https://github.com/captainsafia/commentator)
 - [ ] Create a man page of license
