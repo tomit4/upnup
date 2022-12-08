@@ -1,0 +1,66 @@
+#!/usr/bin/env bash
+set -e
+
+checkfiletype() {
+    local filetype=$1
+    all_comments=( cs css sass mm h hpp hh hxx m js java c cpp cc cxx swift php go py rb hs lhs purs lua sql rs html xml bash ksh mksh csh tsh sh nginx scm rkt clj lisp cl powershell )
+    classic_comments=( cs css sass mm h hpp hh hxx m js java c cpp cc cxx swift php go )
+    haskell_comments=( hs lhs purs )
+    sql_lua_comments=( sql lua )
+    ml_comments=( html xml )
+    shell_comments=( bash ksh mksh csh tsh sh nginx )
+    cl_comments=( scm rkt clj lisp cl )
+    if [[ ! "${all_comments[*]}" =~ ${filetype} ]] ; then
+        echo "error: declared filetype is not supported by annotator"
+        exit 1
+    fi
+    if [[ "${classic_comments[*]}" =~ ${filetype} ]] ; then
+        start="/*"
+        end="*/"
+        inline="//"
+    fi
+    if [[ "$filetype" == "py" ]] ; then
+        start='"""'
+        end='"""'
+        inline='#'
+    fi
+    if [[ "$filetype" == "rb" ]] ; then
+        start='=begin'
+        end='=end' inline='#'
+    fi
+    if [[ "${haskell_comments[*]}" =~ ${filetype} ]] ; then
+        start="{-"
+        end="-}"
+        inline="--"
+    fi
+    if [[ "${sql_lua_comments[*]}" =~ ${filetype} ]] ; then
+        start=''
+        end=''
+        inline='--'
+    fi
+    if [[ "$filetype" == "rs" ]] ; then
+        start=''
+        end=''
+        inline='//'
+    fi
+    if [[ "${ml_comments[*]}" =~ ${filetype} ]] ; then
+        start='<!--'
+        end='-->'
+    fi
+    if [[ "${shell_comments[*]}" =~ ${filetype} ]] ; then
+        start=''
+        end=''
+        inline='#'
+    fi
+    if [[ "${cl_comments[*]}" =~ ${filetype} ]] ; then
+        start=''
+        end=''
+        inline=';'
+    fi
+    if [[ "$filetype" == "powershell" ]] ; then
+        start='<#'
+        end='#>'
+        inline='#'
+    fi
+}
+

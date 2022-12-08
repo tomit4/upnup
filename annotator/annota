@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+set -e
+source ./checkfiletype
+
+# annota is meant to be used in conjunction with upnup.
+# although it can be utilized on its on, its functionality is limited
+
+printhelp () {
+    printf "%s\n" "Usage: block filetype headerfile outputfile"
+    printf "%s\n" "Usage: inline filetype headerfile outputfile"
+    printf "%s\n" "Example: block js agpl-3.0 example.js"
+    exit 0
+}
+
+annota () {
+    local blocktype=$1
+    local filetype=$2
+    local header_file=$3
+    local outputfile=$4
+
+    if [[ $# -lt 4 ]] ; then
+        printhelp
+    fi
+
+    if [[ $blocktype != "block" &&  $blocktype != "inline" ]] ; then
+        echo "error: only 'block' or 'inline' are recognized blocktypes"
+        exit 1
+    fi
+
+    if checkfiletype "$filetype" ; then
+
+        if [[ $blocktype == "block" ]] ; then
+            formatted_comment=$(while read -r line ; do echo "$line" ; done < "$header_file")
+        elif [[ $blocktype == "inline" ]] ; then
+            formatted_comment=$(while read -r line ; do echo "$inline $line" ; done < "$header_file")
+        fi
+
+        if [[ $blocktype == "block" ]]; then
+            block_comment=$(printf "%s" "${formatted_comment}")
+            printf "${start}\n%s\n${end}\n" "${block_comment}" > tmp
+        elif [[ $blocktype == "inline" ]] ; then
+            block_comment=$(printf "%s" "${formatted_comment}")
+            printf "\n%s\n\n" "${block_comment}" > tmp
+        fi
+        cat "$outputfile" >> tmp
+        rm "$outputfile"
+        mv tmp "$outputfile"
+    fi
+}
+
+annota "$@"
