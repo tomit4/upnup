@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+# upnup is a command line application that automatically generates a variey of
+# open source licenses or license headers for specified files. To see more
+# extensive documentation, please see the man page: man upnup
+
 printhelp () {
 cat << EOM
 Usage: upnup [options] [command]
@@ -29,42 +33,60 @@ main () {
     args=("$@")
     user=$USER
     year=$(date | awk -F ' ' '{ print $NF }')
+    # arrays for use with checks below
     license_list="$(find "$HOME"/.config/upnup/licenses | sed 1d | awk -F '/' '{ print $NF }' | sort)"
+    # for use with l flag
     lcs_list=( agpl-3.0 apache-2.0 bsd-2-clause bsd-3-clause bsl-1.0 cc0-1.0 cc0-3.0 cc0-4.0 epl-2.0 gpl-2.0 gpl-3.0 lgpl-2.1 mit mpl-2.0 unlicense )
+    # list of licensenses that have [year] and [fullname] fields
     mod_list=( agpl-3.0 bsd-2-clause bsd-3-clause mit )
+    # for use with -f flag
     header_list=( agpl-3.0 apache-2.0 cc0-1.0 cc0-3.0 cc0-4.0 gpl-2.0 gpl-3.0 lgpl-2.1 lgpl-3.0 )
 
     if [[ $# -lt 1 ]] ; then
         printhelp
     fi
 
+    # loops through all arguments
+    # used instead of getopts because l and p flags have no '-' character
     for (( i = 0; i < $#; i++ )) ; do
+        # grabs the following argument
         j=$((i + 1))
 
+        # overwrites user and/or year variables if respective flag is invoked
         if [[ "${args[$i]}" == '-u' || "${args[$i]}" == '--user' ]] ; then
             user="${args[$j]}"
         elif [[ "${args[$i]}" == '-y' || "${args[$i]}" == '--year' ]] ; then
             year="${args[$j]}"
 
+        # -f flag only creates headers in specified file following p flag
+        # -f flag does not create LICENSE file
         elif [[ "${args[$i]}" == '-f' || "${args[$i]}" == '--file' ]] ; then
             if [ "${args[$j]}" == '' ] ; then
                 printf "%s\n" "error: missing required argument \`header_file'"
                 exit 1
             fi
 
+            # headerfile is argument directly following -f flag
             headerfile="${args[$j]}"
             if [[ ! "${header_list[*]}" =~ ${headerfile} ]] ; then
                 printf "%s\n" "error: requested headerfile is not supported"
                 exit 1
             fi
 
+            # inner loop that then checks all arguments again,
+            # mainly looking for p flag and file to add headers to
             for (( k = 0; k < $#; k++ )) ; do
+                # grabs next argument after p flag,
+                # this is the file to have headers added to
                 m=$((k + 1))
                 if [[ "${args[$k]}" == 'p' || "${args[$k]}" == 'put' ]] ; then
                     if [ "${args[$m]}" == '' ] ; then
                         printf "%s\n" "error: missing required argument \`license'"
                         exit 1
                     else
+                        # determines file type by parsing argument following p
+                        # flag through awk (anything after last '.' character is
+                        # passed to anotta as filetype)
                         filetype=$(printf "%s\n" "${args[$m]}" | awk -F '.' '{ print $NF }')
                         outputfile="${args[$m]}"
                         annota block "${filetype}" "$HOME/.config/upnup/headers/${headerfile}" "${outputfile}" -u "${user}" -y "${year}"
@@ -73,21 +95,27 @@ main () {
                 fi
             done
 
+        # p flag without -f flag indicates basic functionality of generating LICENSE
         elif [[ "${args[$i]}" == 'p' || "${args[$i]}" == 'put' ]] ; then
             if [ "${args[$j]}" == '' ] ; then
                 printf "%s\n" "error: missing required argument \`license'"
                 exit 1
             else
 
+                # loops over $lcs_list array to see if argument passed to p flag exists
                 if [[ ! "${lcs_list[*]}" =~ ${args[$j]} ]] ; then
                     printf "%s\n" "error: ${args[$j]} is not an included \`license"
                     exit 1
                 fi
+                # adds $user and/or $year if the passed LICENSE file is in the $mod_list array
+                # more easily accomplished with sponge, but didn't want to include more depencies...
                 if [[ "${mod_list[*]}" =~ ${args[$j]} ]] ; then
                     cp "$HOME"/.config/upnup/licenses/"${args[$j]}" ./tmp
                     sed "0,/\[year\]/s/\[year\]/$year/" ./tmp > tmp2
                     sed "0,/\[fullname\]/s/\[fullname\]/$user/" ./tmp2 > LICENSE
                     rm tmp tmp2
+                # if the LICENSE file doesn't have [year] or [fullname] fields,
+                # it simply copies the LICENSE to this current directory
                 else
                     cp "$HOME"/.config/upnup/licenses/"${args[$j]}" ./LICENSE
                 fi

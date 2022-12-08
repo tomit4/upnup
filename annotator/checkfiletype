@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# checkfiletype is a dependency of annota
+# it creates the comment characters based off of the file type specified by annota
+
 checkfiletype() {
     local filetype=$1
     all_comments=( cs css sass mm h hpp hh hxx m js java c cpp cc cxx swift php go py rb hs lhs purs lua sql rs html xml bash ksh mksh csh tsh sh nginx scm rkt clj lisp cl powershell )
@@ -63,3 +66,6 @@ checkfiletype() {
     fi
 }
 
+export start
+export end
+export inline

@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+# install script for upnup bash script
+# please review before installing as this script requires root privileges
+# tldr; installs two executable scripts to /usr/local/bin and creates a .config directory
+
 dependencycheck() {
     numdependencies="$#"
     dependencies=("$@")

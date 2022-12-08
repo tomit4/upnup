@@ -1,22 +1,32 @@
 #!/usr/bin/env bash
 
+# annota is a bash script that inserts licensing header text into a file
+# and then comments those headers out.
+# annota is intended to be used solely as a dependency for upnup
+# while annota can be used independent of upnup, that is not its intended use
+
 source "$HOME"/.config/upnup/annotator/checkfiletype
 
 printhelp () {
-    printf "%s\n" "Usage: block filetype headerfile outputfile"
-    printf "%s\n" "Usage: inline filetype headerfile outputfile"
-    printf "%s\n" "Example: annota block js agpl-3.0 example.js"
-    printf "%s\n" "Example: annota block js agpl-3.0 example.js -u fullname -y currentyear"
+cat << EOM
+Usage: block filetype headerfile outputfile
+Usage: inline filetype headerfile outputfile
+Example: annota block js agpl-3.0 example.js
+Example: annota block js agpl-3.0 example.js -u fullname -y currentyear
+EOM
     exit 0
 }
 
 annota () {
     user=$USER
     year=$(date | awk -F ' ' '{ print $NF }')
+    # if [projectname] is in header file, calling anotta from root directory
+    # will place directory name as projectname in header file
     projectname=$(pwd | awk -F '/' '{ print $NF }')
     local blocktype=$1
     local filetype=$2
     local header_file=$3
+    # $outputfile variable holds name of original filename
     local outputfile=$4
     local userflag=$5
     local newusername=$6
@@ -27,6 +37,7 @@ annota () {
         printhelp
     fi
 
+    # passes upnup's $user and/or $year variables to anotta
     if [[ "$userflag" == '-u' || "$userflag" == '--user' ]] ; then
         user="$newusername"
     fi
@@ -39,30 +50,43 @@ annota () {
         exit 1
     fi
 
+    # if the results of checkfiletype return 0 or true
     if checkfiletype "$filetype" ; then
+        # languages that have no block commenting features default to inline comments
         inline_only=( sql lua rs bash ksh mksh csh ttsh sh nginx scm rkt clj lisp cl )
         if [[ "${inline_only[*]}" =~ ${filetype} ]] ; then
             blocktype="inline"
         fi
 
+        # goes line by line and stores it in $formatted_comment variable
         if [[ $blocktype == "block" ]] ; then
             formatted_comment=$(while read -r line ; do echo "$line" ; done < "$header_file")
         elif [[ $blocktype == "inline" ]] ; then
             formatted_comment=$(while read -r line ; do echo "$inline $line" ; done < "$header_file")
         fi
 
+        # creates block comment of header file and stores it in file 'tmp'
         if [[ $blocktype == "block" ]]; then
             block_comment=$(printf "%s" "${formatted_comment}")
             printf "${start}\n%s\n${end}\n" "${block_comment}" > tmp
+        # creates inline comment of header file and stores it in file 'tmp'
         elif [[ $blocktype == "inline" ]] ; then
             block_comment=$(printf "%s" "${formatted_comment}")
             printf "\n%s\n\n" "${block_comment}" > tmp
         fi
+        # appends original contents (non-header content) to 'tmp'
         cat "$outputfile" >> tmp
+        # and removes original file
         rm "$outputfile"
+        # inserts $year variable into header section and stores all output into file 'tmp2'
         sed "0,/\[year\]/s/\[year\]/$year/" ./tmp > tmp2
+        # replaces all references to [projectname] with name of current
+        # directory and stores ouput in file 'tmp3',
+        # this is why its good to call upnup from root of project when creating header files
         cat tmp2 | sed -e "s:\[projectname\]:${projectname}:g" > tmp3
+        # and finally replaces [fullname] with $user variable
         sed "0,/\[fullname\]/s/\[fullname\]/$user/" ./tmp3 > "$outputfile"
+        # cleaning up tmp files
         rm tmp tmp2 tmp3
         exit 0
     else

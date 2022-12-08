@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
+#
+# uninstall script for upnup bash script
+# please review before installing as this script requires root privileges
+# tldr; uninstalls two executable scripts from /usr/local/bin and removes a .config directory
 
 dependencycheck() {
     numdependencies="$#"
