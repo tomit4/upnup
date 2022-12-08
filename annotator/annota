@@ -2,7 +2,6 @@
 set -e
 
 source "$HOME"/.config/upnup/annotator/checkfiletype
-# source ./checkfiletype
 
 printhelp () {
     printf "%s\n" "Usage: block filetype headerfile outputfile"

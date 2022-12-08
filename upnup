@@ -68,7 +68,7 @@ main () {
                         printf "%s\n" "error: missing required argument \`license'"
                         exit 1
                     else
-                        filetype=$(printf "%s\n" "${args[$m]}" | awk -F '.' '{ print $2 }')
+                        filetype=$(printf "%s\n" "${args[$m]}" | awk -F '.' '{ print $NF }')
                         outputfile="${args[$m]}"
                         annota block "${filetype}" "$HOME/.config/upnup/headers/${headerfile}" "${outputfile}" -u "${user}" -y "${year}"
                         exit 0
