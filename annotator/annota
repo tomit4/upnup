@@ -5,6 +5,7 @@ set -e
 # although it can be utilized on its on, its functionality is limited
 
 source "$HOME"/.config/upnup/annotator/checkfiletype
+# source ./checkfiletype
 
 printhelp () {
     printf "%s\n" "Usage: block filetype headerfile outputfile"
@@ -16,7 +17,8 @@ printhelp () {
 
 annota () {
     user=$USER
-    year=$(date | awk -F ' ' '{ print $7 }')
+    year=$(date | awk -F ' ' '{ print $NF }')
+    projectname=$(pwd | awk -F '/' '{ print $NF }')
     local blocktype=$1
     local filetype=$2
     local header_file=$3
@@ -64,8 +66,9 @@ annota () {
         cat "$outputfile" >> tmp
         rm "$outputfile"
         sed "0,/\[year\]/s/\[year\]/$year/" ./tmp > tmp2
-        sed "0,/\[fullname\]/s/\[fullname\]/$user/" ./tmp2 > "$outputfile"
-        rm tmp tmp2
+        cat tmp2 | sed -e "s:\[projectname\]:${projectname}:g" > tmp3
+        sed "0,/\[fullname\]/s/\[fullname\]/$user/" ./tmp3 > "$outputfile"
+        rm tmp tmp2 tmp3
         exit 0
     else
         printf "%s\n" "error: specified filetype is not supported by annota"
