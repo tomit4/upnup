@@ -99,22 +99,22 @@ function createconfig() {
     fi
 }
 
-# function installman() {
-    # if [[ -d "/usr/share/man/man1" ]] ; then
-        # printf "%s\n" "installing man page in /usr/share/man/man1 ..."
-        # if command -v "doas" &> /dev/null ; then
-            # doas cp man_page/upnup.1.gz /usr/share/man/man1/
-        # else
-            # sudo cp man_page/upnup.1.gz /usr/share/man/man1/
-        # fi
-    # else
-        # printf "%s\n" "/usr/share/man/man1 doesn't exist, copy upnup.1.gz to preferred man page directory manually"
-        # exit 0
-    # fi
-# }
+function installman() {
+    if [[ -d "/usr/share/man/man1" ]] ; then
+        printf "%s\n" "installing man page in /usr/share/man/man1 ..."
+        if command -v "doas" &> /dev/null ; then
+            doas cp man_page/upnup.1.gz /usr/share/man/man1/
+        else
+            sudo cp man_page/upnup.1.gz /usr/share/man/man1/
+        fi
+    else
+        printf "%s\n" "/usr/share/man/man1 doesn't exist, copy upnup.1.gz to preferred man page directory manually"
+        exit 0
+    fi
+}
 
 changeowner
 install_upnup
 install_annota
 createconfig
-# installman
+installman

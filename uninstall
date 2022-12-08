@@ -53,18 +53,18 @@ function remove_config() {
     fi
 }
 
-# function remove_man() {
-    # if [[ -f "/usr/share/man/man1/upnup.1.gz" ]] ; then
-        # printf "%s\n" "removing man page /usr/share/man/man1/upnup.1.gz ..."
-        # if command -v "doas" &> /dev/null ; then
-            # doas rm /usr/share/man/man1/upnup.1.gz
-        # else
-            # sudo rm /usr/share/man/man1/upnup.1.gz
-        # fi
-    # fi
-# }
+function remove_man() {
+    if [[ -f "/usr/share/man/man1/upnup.1.gz" ]] ; then
+        printf "%s\n" "removing man page /usr/share/man/man1/upnup.1.gz ..."
+        if command -v "doas" &> /dev/null ; then
+            doas rm /usr/share/man/man1/upnup.1.gz
+        else
+            sudo rm /usr/share/man/man1/upnup.1.gz
+        fi
+    fi
+}
 
 remove_upnup
 remove_annota
 remove_config
-# remove_man
+remove_man

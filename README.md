@@ -30,7 +30,7 @@ upnup is a bash version of [Safia Abdalla's legit](https://github.com/captainsaf
 - [x] Get the above options working
 - [x] Comments for headers will be somewhat difficult, see [Safia's
 commentator](https://github.com/captainsafia/commentator)
-- [ ] Create a man page of license
+- [x] Create a man page of upnup
 - [ ] In Man or Help Page create Permissions/Conditions/Limitations summary like
 on [choosealicense](https://choosealicense.com/licenses/)
 - [ ] Consider adding [Contributor Covenant Code of Conduct](https://www.contributor-covenant.org/) in spirt of Safia's original legit project

@@ -1,0 +1,60 @@
+.TH UPNUP 1L 2022-09-29 Info-UPNUP
+
+.SH NAME
+upnup \- generate licenses from the command line
+
+.SH SYNOPSIS
+.B upnup
+[\fB\-V/--version\fR]
+[\fB\-h/--help\fR]
+[\fB\-u/--user\fR]
+[\fB\-y/--year\fR]
+[\fB\-f/--file\fR]
+
+.SH DESCRIPTION
+upnup allows you to automatically generate a LICENSE file for the current working directory that you are in or a license header for a file where applicable.
+
+.SH DEFAULTS
+upnup can be invoked using the command with the p flag followed by the name of
+the desired license. It will look for the $USER variable and input that under
+any fullname fields in the license. upnup also uses the date command line tool
+to determine the current year, which it then inserts into any year fields.
+
+.SH OPTIONS
+.TP
+.BR \-V, --version
+output version information and exit
+.TP
+.BR \-h, \--help
+display help message and exit (you will also receive this message if you pass no arguments)
+.TP
+.BR \-u, \--user \ [username]
+input the username or organization of who holds the license
+.TP
+.BR \-y, \--year \ [year]
+input the year the license is in effect
+.TP
+.BR \-f, \--file \ <file>
+prepend a license header to a file (call from project root directory)
+.TP
+.BR \ l, list
+list all available licenses
+.TP
+.BR \ p, put \ <filename\ or\ license>
+put a license in current directory (when called with -f flag, specifiy file to
+add headers to. otherwise, enter license name).
+
+.SH FILES
+.TP
+.I /usr/local/bin/upnup /usr/local/bin/annota
+the shell scripts are located in /usr/local/bin.
+.TP
+.I ~/.config/upnup
+all configuration files can be found here
+
+.SH AUTHOR
+z3rOR0ne <z3rOR0ne@protonmail.com>
+
+.SH SEE ALSO
+\fBlegit\fR
+\fBcommentator\fR
