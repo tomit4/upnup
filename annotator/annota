@@ -1,9 +1,6 @@
 #!/usr/bin/env bash
 set -e
 
-# annota is meant to be used in conjunction with upnup.
-# although it can be utilized on its on, its functionality is limited
-
 source "$HOME"/.config/upnup/annotator/checkfiletype
 # source ./checkfiletype
 
