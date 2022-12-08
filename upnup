@@ -15,8 +15,16 @@ printhelp () {
     printf "%s\n" "  list|l                     List all available licenses"
     printf "%s\n" "  put|p [options] <license>  Put a license in this directory"
     printf "%s\n" ""
-    printf "%s\n" "Note:"
+    printf "%s\n" "Notes:"
     printf "%s\n" "  if used, -f flag must always come before p command"
+    printf "%s\n" "  call upnup from root of project when using -f flag"
+    printf "%s\n" "  projectname in headers defaults to current directory name"
+    printf "%s\n" ""
+    printf "%s\n" "Examples:"
+    printf "%s\n" "  upnup p mit"
+    printf "%s\n" "  upnup -u \"john doe\" -y 2021 p bsd-3-clause"
+    printf "%s\n" "  upnup -f agpl-3.0 p src/test.js"
+    printf "%s\n" "  upnup -u \"john doe\" -y 2021 -f cc0-1.0 p src/main/file.py"
     exit 0
 }
 
