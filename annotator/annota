@@ -29,6 +29,10 @@ annota () {
     fi
 
     if checkfiletype "$filetype" ; then
+        inline_only=( sql lua rs bash ksh mksh csh ttsh sh nginx scm rkt clj lisp cl )
+        if [[ "${inline_only[*]}" =~ ${filetype} ]] ; then
+            blocktype="inline"
+        fi
 
         if [[ $blocktype == "block" ]] ; then
             formatted_comment=$(while read -r line ; do echo "$line" ; done < "$header_file")
