@@ -33,4 +33,4 @@ commentator](https://github.com/captainsafia/commentator)
 - [x] Create a man page of upnup
 - [x] In Man or Help Page create Permissions/Conditions/Limitations summary like
 on [choosealicense](https://choosealicense.com/licenses/)
-- [ ] Consider adding [Contributor Covenant Code of Conduct](https://www.contributor-covenant.org/) in spirt of Safia's original legit project
+- [ ] Update README.md with explanations (take a cue from bgit), add asciiden, etc.
