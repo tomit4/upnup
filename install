@@ -1,6 +1,4 @@
 #!/usr/bin/env bash
-# depends on moreutils for sponge
-set -e
 
 dependencycheck() {
     numdependencies="$#"
@@ -101,11 +99,26 @@ function createconfig() {
 
 function installman() {
     if [[ -d "/usr/share/man/man1" ]] ; then
-        printf "%s\n" "installing man page in /usr/share/man/man1 ..."
-        if command -v "doas" &> /dev/null ; then
-            doas cp man_page/upnup.1.gz /usr/share/man/man1/
+        if [[ ! -f /usr/share/man/man1/upnup.1.gz ]] ; then
+            printf "%s\n" "installing man page in /usr/share/man/man1 ..."
+            if command -v "doas" &> /dev/null ; then
+                doas cp man_page/upnup.1.gz /usr/share/man/man1/
+            else
+                sudo cp man_page/upnup.1.gz /usr/share/man/man1/
+            fi
         else
-            sudo cp man_page/upnup.1.gz /usr/share/man/man1/
+            read -e -r -p "upnup.1.gz already exists, would you like to overwrite man page?(y/n): " replaceman
+            if [[ "$replaceman" == "y" || "$replaceman" == "yes" ]] ; then
+                printf "%s\n" "installing man page in /usr/share/man/man1 ..."
+                if command -v "doas" &> /dev/null ; then
+                    doas cp man_page/upnup.1.gz /usr/share/man/man1/
+                else
+                    sudo cp man_page/upnup.1.gz /usr/share/man/man1/
+                fi
+            else
+                printf "%s\n" "install script exiting, no updates man page have been made ..."
+                exit 0
+            fi
         fi
     else
         printf "%s\n" "/usr/share/man/man1 doesn't exist, copy upnup.1.gz to preferred man page directory manually"

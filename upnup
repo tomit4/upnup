@@ -1,30 +1,27 @@
 #!/usr/bin/env bash
-set -e
 
 printhelp () {
-    printf "%s\n" "Usage: upnup [options] [command]"
-    printf "%s\n" ""
-    printf "%s\n" "Options:"
-    printf "%s\n" "  -V, --version              output the version number"
-    printf "%s\n" "  -h, --help                 output usage information"
-    printf "%s\n" "  -u, --user [user]          The user/organization who holds the license"
-    printf "%s\n" "  -y, --year [year]          The year the license is in effect"
-    printf "%s\n" "  -f, --file <file>          The file to add a header to"
-    printf "%s\n" ""
-    printf "%s\n" "Commands:"
-    printf "%s\n" "  list|l                     List all available licenses"
-    printf "%s\n" "  put|p [options] <license>  Put a license in this directory"
-    printf "%s\n" ""
-    printf "%s\n" "Notes:"
-    printf "%s\n" "  if used, -f flag must always come before p command"
-    printf "%s\n" "  call upnup from root of project when using -f flag"
-    printf "%s\n" "  projectname in headers defaults to current directory name"
-    printf "%s\n" ""
-    printf "%s\n" "Examples:"
-    printf "%s\n" "  upnup p mit"
-    printf "%s\n" "  upnup -u \"john doe\" -y 2021 p bsd-3-clause"
-    printf "%s\n" "  upnup -f agpl-3.0 p src/test.js"
-    printf "%s\n" "  upnup -u \"john doe\" -y 2021 -f cc0-1.0 p src/main/file.py"
+cat << EOM
+Usage: upnup [options] [command]
+Options:
+ -V, --version              output the version number
+ -h, --help                 output usage information"
+ -u, --user [user]          The user/organization who holds the license
+ -y, --year [year]          The year the license is in effect
+ -f, --file <file>          The file to add a header to
+Commands:
+ list|l                     List all available licenses
+ put|p [options] <license>  Put a license in this directory
+Notes:
+ if used, -f flag must always come before p command
+ call upnup from root of project when using -f flag
+ projectname in headers defaults to current directory name
+Examples:
+ upnup p mit
+ upnup -u "john doe" -y 2021 p bsd-3-clause
+ upnup -f agpl-3.0 p src/test.js
+ upnup -u "john doe" -y 2021 -f cc0-1.0 p src/main/file.py
+EOM
     exit 0
 }
 
