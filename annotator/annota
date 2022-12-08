@@ -10,17 +10,31 @@ printhelp () {
     printf "%s\n" "Usage: block filetype headerfile outputfile"
     printf "%s\n" "Usage: inline filetype headerfile outputfile"
     printf "%s\n" "Example: annota block js agpl-3.0 example.js"
+    printf "%s\n" "Example: annota block js agpl-3.0 example.js -u fullname -y currentyear"
     exit 0
 }
 
 annota () {
+    user=$USER
+    year=$(date | awk -F ' ' '{ print $7 }')
     local blocktype=$1
     local filetype=$2
     local header_file=$3
     local outputfile=$4
+    local userflag=$5
+    local newusername=$6
+    local yearflag=$7
+    local newyear=$8
 
     if [[ $# -lt 4 ]] ; then
         printhelp
+    fi
+
+    if [[ "$userflag" == '-u' || "$userflag" == '--user' ]] ; then
+        user="$newusername"
+    fi
+    if [[ "$yearflag" == '-y' || "$yearflag" == '--year' ]] ; then
+        year="$newyear"
     fi
 
     if [[ $blocktype != "block" &&  $blocktype != "inline" ]] ; then
@@ -49,7 +63,9 @@ annota () {
         fi
         cat "$outputfile" >> tmp
         rm "$outputfile"
-        mv tmp "$outputfile"
+        sed "0,/\[year\]/s/\[year\]/$year/" ./tmp > tmp2
+        sed "0,/\[fullname\]/s/\[fullname\]/$user/" ./tmp2 > "$outputfile"
+        rm tmp tmp2
         exit 0
     else
         printf "%s\n" "error: specified filetype is not supported by annota"
