@@ -1,4 +1,4 @@
-.TH UPNUP 1L 2022-09-29 Info-UPNUP
+.TH UPNUP 1L 2022-12-08 Info-UPNUP
 
 .SH NAME
 upnup \- generate licenses from the command line
