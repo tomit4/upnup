@@ -53,17 +53,45 @@ function install_upnup() {
     fi
 }
 
+function install_annota() {
+    if [[ ! -f /usr/local/bin/annota ]] ; then
+        printf "%s\n" 'installing annota to /usr/local/bin ...'
+        if command -v "doas" &> /dev/null ; then
+            doas cp ./annotator/annota /usr/local/bin/
+            doas chmod 755 /usr/local/bin/annota
+        else
+            sudo cp ./annotator/annota /usr/local/bin/
+            sudo chmod 755 /usr/local/bin/annota
+        fi
+    else
+        read -e -r -p "annota already installed, would you like to reinstall?(y/n): " reinstall
+        if [[ $reinstall == "y" || $reinstall == "yes" ]] ; then
+            if command -v "doas" &> /dev/null ; then
+                doas cp ./annotator/annota /usr/local/bin/
+                doas chmod 755 /usr/local/bin/annota
+            else
+                sudo cp ./annotator/annota /usr/local/bin/
+                sudo chmod 755 /usr/local/bin/annota
+            fi
+        else
+            printf "%s\n" "install script exiting, no changes were made to annota."
+        fi
+    fi
+}
+
 function createconfig() {
     if [[ ! -d "$HOME/.config/upnup/" ]] ; then
         printf "%s\n" "installing configuration files in directory ~/.config/upnup/ ..."
         mkdir -p "$HOME"/.config/upnup/
         cp -r licenses "$HOME"/.config/upnup/
         cp -r headers "$HOME"/.config/upnup/
+        cp -r annotator "$HOME"/.config/upnup/
     else
         read -e -r -p "\~/.config/upnup directory already exists, would you like to overwrite configuration files?(y/n): " replaceconfig
         if [[ $replaceconfig == "y" || $replaceconfig == "yes" ]] ; then
             cp -r licenses "$HOME"/.config/upnup/
             cp -r headers "$HOME"/.config/upnup/
+            cp -r annotator "$HOME"/.config/upnup/
         else
             printf "%s\n" "install script exiting, no updates to configuration have been made ..."
             exit 0
@@ -87,5 +115,6 @@ function createconfig() {
 
 changeowner
 install_upnup
+install_annota
 createconfig
 # installman

@@ -18,7 +18,7 @@ dependencycheck() {
 
 dependencycheck sudo rm
 
-function removeupnup() {
+function remove_upnup() {
     if [[ -f /usr/local/bin/upnup ]] ; then
         if command -v "doas" &> /dev/null ; then
             doas rm /usr/local/bin/upnup
@@ -30,7 +30,19 @@ function removeupnup() {
     fi
 }
 
-function removeconfig() {
+function remove_annota() {
+    if [[ -f /usr/local/bin/annota ]] ; then
+        if command -v "doas" &> /dev/null ; then
+            doas rm /usr/local/bin/annota
+            printf "%s\n" "removing /usr/local/bin/annota ..."
+        else
+            sudo rm /usr/local/bin/annota
+            printf "%s\n" "removing /usr/local/bin/annota ..."
+        fi
+    fi
+}
+
+function remove_config() {
     if [[ -d "$HOME/.config/upnup/" ]] ; then
         printf "%s\n" "removing ~/.config/upnup ..."
         if command -v "doas" &> /dev/null ; then
@@ -41,7 +53,7 @@ function removeconfig() {
     fi
 }
 
-# function removeman() {
+# function remove_man() {
     # if [[ -f "/usr/share/man/man1/upnup.1.gz" ]] ; then
         # printf "%s\n" "removing man page /usr/share/man/man1/upnup.1.gz ..."
         # if command -v "doas" &> /dev/null ; then
@@ -52,6 +64,7 @@ function removeconfig() {
     # fi
 # }
 
-removeupnup
-removeconfig
-# removeman
+remove_upnup
+remove_annota
+remove_config
+# remove_man
