@@ -106,10 +106,6 @@ main () {
         elif [[ "${args[$i]}" == '-V' || "${args[$i]}" == '--version' ]] ; then
             printf "%s\n" "0.0.1"
             exit 0
-        else
-            printf "%s\n" "error: unknown argument passed"
-            printf "%s\n" "type -h for help page"
-            exit 1
         fi
     done
 }
