@@ -28,7 +28,7 @@ upnup is a bash version of [Safia Abdalla's legit](https://github.com/captainsaf
 ```
 ##### Checklist
 - [x] Get the above options working
-- [ ] Comments for headers will be somewhat difficult, see [Safia's
+- [x] Comments for headers will be somewhat difficult, see [Safia's
 commentator](https://github.com/captainsafia/commentator)
 - [ ] Create a man page of license
 - [ ] In Man or Help Page create Permissions/Conditions/Limitations summary like
