@@ -29,5 +29,5 @@ commentator](https://github.com/captainsafia/commentator)
 - [x] Create a man page of upnup
 - [x] In Man or Help Page create Permissions/Conditions/Limitations summary like
 on [choosealicense](https://choosealicense.com/licenses/)
-- [ ] Comment your code for future you
+- [x] Comment your code for future you
 - [ ] Update README.md with explanations (take a cue from bgit), add asciiden, etc.
