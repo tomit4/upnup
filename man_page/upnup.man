@@ -19,6 +19,8 @@ upnup can be invoked using the command with the p flag followed by the name of
 the desired license. It will look for the $USER variable and input that under
 any [fullname] fields in the license. upnup also uses the date command line tool
 to determine the current year, which it then inserts into any [year] fields.
+When using the -f option, [projectname] will default to current directory. It is
+advised to invoke upnup with the -f flag at project root directory.
 
 .SH OPTIONS
 .TP
