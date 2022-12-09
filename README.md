@@ -13,19 +13,21 @@ clone this repository and navigate into it:
 
 `cd upnup`
 
-this repository includes install/uninstall scripts for your convenience. These
-scripts do require root privileges, so please review them carefully before
-executing them.
+this repository includes install/uninstall scripts for your convenience.
 
-`less ./install ./uninstall`
+By default, the script and data files are installed systemwide in `/usr/local` (requires root privilege).
 
-`chmod +x ./install ./uninstall`
+If you want to install to your home directory, use `./install --user` (no root required).
 
-`./install`
+To customize the installation, you can set the `PREFIX` directory, or further customize with the `BINDIR`, `DATADIR`, and `MANDIR` variables. Run `./install --help` for details.
+
+You can preview the actions the install script will take by giving the `--dry-run` switch.
 
 And if you wish to uninstall:
 
 `./uninstall`
+
+Note: if you used the `--user` switch and/or defined `PREFIX` (etc.), you will also need to give those to `uninstall`.
 
 ### Usage
 ```
