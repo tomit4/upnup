@@ -3,7 +3,7 @@ upnup is a command line utility that generates a LICENSE file in the current
 working directory. It also is able to generate license headers for applicable
 files.
 
-upnup is a bash version of [Safia Abdalla's legit](https://github.com/captainsafia/legit)
+upnup is a bash version of [Safia Abdalla's legit](https://github.com/captainsafia/legit).
 
 ### Installation/Uninstallation
 
@@ -48,13 +48,35 @@ Examples:
  upnup -u "john doe" -y 2021 p bsd-3-clause
  upnup -f agpl-3.0 p src/test.js
  upnup -u "john doe" -y 2021 -f cc0-1.0 p src/main/file.py
+See man page for details:
+ man upnup
 ```
-##### Checklist
-- [x] Get the above options working
-- [x] Comments for headers will be somewhat difficult, see [Safia's
-commentator](https://github.com/captainsafia/commentator)
-- [x] Create a man page of upnup
-- [x] In Man or Help Page create Permissions/Conditions/Limitations summary like
-on [choosealicense](https://choosealicense.com/licenses/)
-- [x] Comment your code for future you
-- [ ] Update README.md with explanations (take a cue from bgit), add asciiden, etc.
+
+### Which license should I use?
+
+Please see the disclaimer below regarding the whole "this is not legal advice"
+spiel. After running the install script, you can find the default licenses in:
+
+`$HOME/.config/upnup/licenses`
+
+Additionally I've included brief synopses of each of the licenses in the man
+pages (credit: [choosealicense](https://choosealicense.com)):
+
+`man upnup`
+
+### Why did you make this when legit already exists?
+
+legit was the inspiration for this project, so of course i have great respect for Safia Abdalla!
+legit is a simple small program written in JavaScript and I have utilized it in my projects often.
+ I'm currently learning bash scripting as I try and utilize it to automate more and more of my workflow. Additionally, legit requires node and npm to be installed, while bash is installed by default in pretty much all UNIX-like operating systems (MacOs, Linux, BSDs). While there are some minor differences in invocation, upnup is more or less a drop in replacement for legit.
+
+### Safia's Inspiring Projects:
+
+- [legit](https://github.com/captainsafia/legit)
+- [commentator](https://github.com/captainsafia/commentator)
+
+### Disclaimer
+
+I am not a lawyer and none of this or any documents within this
+repository are to be construed as legal advice. All content herein is for
+informational purposes only.
