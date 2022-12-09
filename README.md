@@ -1,5 +1,32 @@
 # upnup
+upnup is a command line utility that generates a LICENSE file in the current
+working directory. It also is able to generate license headers for applicable
+files.
+
 upnup is a bash version of [Safia Abdalla's legit](https://github.com/captainsafia/legit)
+
+### Installation/Uninstallation
+
+clone this repository and navigate into it:
+
+`git clone https://codeberg.org/z3rOR0ne/upnup`
+
+`cd upnup`
+
+this repository includes install/uninstall scripts for your convenience. These
+scripts do require root privileges, so please review them carefully before
+executing them.
+
+`less ./install ./uninstall`
+
+`chmod +x ./install ./uninstall`
+
+`./install`
+
+And if you wish to uninstall:
+
+`./uninstall`
+
 ### Usage
 ```
 Usage: upnup [options] [command]
