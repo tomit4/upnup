@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# upnup is a command line application that automatically generates a variey of
+# upnup is a command line application that automatically generates a variety of
 # open source licenses or license headers for specified files. To see more
 # extensive documentation, please see the man page: man upnup
 
