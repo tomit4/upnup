@@ -51,6 +51,7 @@ Examples:
 See man page for details:
  man upnup
 ```
+[![asciicast](https://asciinema.org/a/b4OuDj0sI8ivAnf16ZneQ7mqf.svg)](https://asciinema.org/a/b4OuDj0sI8ivAnf16ZneQ7mqf)
 
 ### Which license should I use?
 
