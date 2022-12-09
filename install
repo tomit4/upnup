@@ -1,137 +1,186 @@
 #!/usr/bin/env bash
 
-# install script for upnup bash script
-# please review before installing as this script requires root privileges
-# tldr; installs two executable scripts to /usr/local/bin and creates a .config directory
+# install and uninstall script for upnup bash script and data files
+
+# Requires root privilege unless --user / --home is used
+# Use --dry-run first to preview what will be done
+
+usage() {
+cat << EOM
+$0 [options]
+Options:
+ --user, --home             install to (uninstall from) home directory
+ --dry-run                  prints actions rather than performing them
+ -v, --verbose              print verbose information
+ -h, --help                 output usage information
+
+Environment variables that affect installation:
+ PREFIX                     default: /usr/local **
+ BINDIR                     default: PREFIX/bin
+ DATADIR                    default: PREFIX/share
+ MANDIR                     default: DATADIR/man
+
+** If --user/--home specified, PREFIX defaults to ~/.local
+EOM
+}
+
+do_log() {
+    printf "%s\n" "$*" 1>&2
+    return 0
+}
+
+# Determine elevation mechanism
+if command -v "doas" &> /dev/null ; then
+    __elev="doas"
+else
+    __elev="sudo"
+fi
+
+# Parse arguments
+for arg in "$@" ; do
+    case "$arg" in
+        --user|--home)
+            PREFIX="${PREFIX:-${HOME}/.local}"
+            __elev=""
+            ;;
+        --verbose|-v)
+            __verbose=1
+            ;;
+        --dry-run)
+            __log=do_log
+            ;;
+        --help|-h)
+            usage
+            exit 0
+            ;;
+    esac
+done
+
+bindir="${BINDIR:-${PREFIX:-/usr/local}/bin}"
+datadir="${DATADIR:-${PREFIX:-/usr/local}/share}"
+mandir="${MANDIR:-$datadir/man}"
+
+if [[ -n $__verbose ]] ; then
+    echo "BINDIR=\"$bindir\""
+    echo "DATADIR=\"$datadir\""
+    echo "MANDIR=\"$mandir\""
+    [[ -n $__elev ]] && echo "using $__elev for privilege elevation"
+fi
+
+error() {
+    printf "error: %s\n" "$1" 1>&2
+    ${2:+exit $2}
+}
 
 dependencycheck() {
-    numdependencies="$#"
-    dependencies=("$@")
-    missingdependencies=0
-    for ((i = 0; i < numdependencies; i++)) ; do
-        if ! command -v "${dependencies[$i]}" &> /dev/null ; then
-            printf "dependency not met: %s\n" "${dependencies[$i]}"
-            missingdependencies=$((missingdependencies+1))
+    local dep missingdependencies=0
+    for dep in "$@" ; do
+        if ! command -v "$dep" &> /dev/null ; then
+            error "dependency not met: $dep"
         fi
     done
-    if [ $missingdependencies -gt 0 ]; then
+    if [[ $missingdependencies -gt 0 ]] ; then
         exit 1
     fi
 }
 
-dependencycheck sudo chown cp chmod mkdir date awk sed rm find sort
 
 function changeowner() {
-        if command -v "doas" &> /dev/null ; then
-            doas chown -R "$USER":"$USER" ./*
-        else
-            sudo chown -R "$USER":"$USER" ./*
-        fi
+        [[ -n $__elev ]] || return
+        $__log $__elev chown -R "$USER":"$USER" ./*
 }
 
-function install_upnup() {
-    if [[ ! -f /usr/local/bin/upnup ]] ; then
-        printf "%s\n" 'installing upnup to /usr/local/bin ...'
-        if command -v "doas" &> /dev/null ; then
-            doas cp upnup /usr/local/bin/
-            doas chmod 755 /usr/local/bin/upnup
-        else
-            sudo cp upnup /usr/local/bin/
-            sudo chmod 755 /usr/local/bin/upnup
+function overwrite() {
+    local resp
+    read -e -r -p "$1(y/n): " resp
+    case "$resp" in
+        [Yy]|yes)
+            return 0
+            ;;
+        *)
+            printf "%s\n" "no change made"
+            ;;
+    esac
+    return 1
+}
+
+function install_binfile() {
+    local file base
+    for file in "$@"; do
+        base="${file##*/}"
+        if [[ -f "$bindir/$base" ]] ; then
+            overwrite "$base already installed, would you like to reinstall?" || continue
         fi
-    else
-        read -e -r -p "upnup already installed, would you like to reinstall?(y/n): " reinstall
-        if [[ $reinstall == "y" || $reinstall == "yes" ]] ; then
-            if command -v "doas" &> /dev/null ; then
-                doas cp upnup /usr/local/bin/
-                doas chmod 755 /usr/local/bin/upnup
-            else
-                sudo cp upnup /usr/local/bin/
-                sudo chmod 755 /usr/local/bin/upnup
-            fi
-        else
-            printf "%s\n" "install script exiting, no changes were made to upnup."
-        fi
+        $__log $__elev cp "$file" "$bindir/" || error "failed to create $bindir/$base"
+        $__log $__elev chmod 755 "$bindir/$base" || error "failed to change permission of $bindir/$base"
+    done
+}
+
+function uninstall_binfile() {
+    local file
+    for file in "$@"; do
+        [[ -e "$bindir/$file" ]] || continue
+        $__log $__elev rm -f "$bindir/$file" || error "failed to remove $bindir/$file"
+    done
+}
+
+function install_data() {
+    if [[ -d "$datadir/upnup" ]] ; then
+        overwrite "$datadir/upnup directory already exists, would you like to overwrite configuration files?" || return
+        $__log $__elev rm -rf "$datadir/upnup" || error "failed to remove existing $datadir/upnup directory" 2
     fi
+    printf "%s\n" "installing configuration files in directory $datadir/upnup/ ..."
+    $__log $__elev mkdir -p "$datadir/upnup" || error "failed to create $datadir/upnup directory" 2
+    local target
+    for target in "$@" ; do
+        $__log $__elev cp -r "$target" "$datadir/upnup/" || error "failed to copy $target to $datadir/upnup"
+    done
 }
 
-function install_annota() {
-    if [[ ! -f /usr/local/bin/annota ]] ; then
-        printf "%s\n" 'installing annota to /usr/local/bin ...'
-        if command -v "doas" &> /dev/null ; then
-            doas cp ./annotator/annota /usr/local/bin/
-            doas chmod 755 /usr/local/bin/annota
-        else
-            sudo cp ./annotator/annota /usr/local/bin/
-            sudo chmod 755 /usr/local/bin/annota
-        fi
-    else
-        read -e -r -p "annota already installed, would you like to reinstall?(y/n): " reinstall
-        if [[ $reinstall == "y" || $reinstall == "yes" ]] ; then
-            if command -v "doas" &> /dev/null ; then
-                doas cp ./annotator/annota /usr/local/bin/
-                doas chmod 755 /usr/local/bin/annota
-            else
-                sudo cp ./annotator/annota /usr/local/bin/
-                sudo chmod 755 /usr/local/bin/annota
-            fi
-        else
-            printf "%s\n" "install script exiting, no changes were made to annota."
-        fi
-    fi
+function uninstall_data() {
+    [[ -d "$datadir/upnup" ]] || return
+    $__log $__elev rm -rf "$datadir/upnup" || error "failed to remove $datadir/upnup directory"
 }
 
-function createconfig() {
-    if [[ ! -d "$HOME/.config/upnup/" ]] ; then
-        printf "%s\n" "installing configuration files in directory ~/.config/upnup/ ..."
-        mkdir -p "$HOME"/.config/upnup/
-        cp -r licenses "$HOME"/.config/upnup/
-        cp -r headers "$HOME"/.config/upnup/
-        cp -r annotator "$HOME"/.config/upnup/
-    else
-        read -e -r -p "\~/.config/upnup directory already exists, would you like to overwrite configuration files?(y/n): " replaceconfig
-        if [[ $replaceconfig == "y" || $replaceconfig == "yes" ]] ; then
-            cp -r licenses "$HOME"/.config/upnup/
-            cp -r headers "$HOME"/.config/upnup/
-            cp -r annotator "$HOME"/.config/upnup/
-        else
-            printf "%s\n" "install script exiting, no updates to configuration have been made ..."
-            exit 0
+function install_manfile() {
+    local sub file base
+    sub="$1"; shift
+    $__log $__elev mkdir -p "$mandir/$sub" || error "failed to create $mandir/$sub directory" 2
+    for file in "$@" ; do
+        base="${file##*/}"
+        if [[ -f "$mandir/$sub/$base" ]] ; then
+            overwrite "$base already installed, would you like to reinstall?" || continue
         fi
-    fi
+        $__log $__elev cp "$file" "$mandir/$sub" || error "failed to create $mandir/$sub/$base"
+    done
 }
 
-function installman() {
-    if [[ -d "/usr/share/man/man1" ]] ; then
-        if [[ ! -f /usr/share/man/man1/upnup.1.gz ]] ; then
-            printf "%s\n" "installing man page in /usr/share/man/man1 ..."
-            if command -v "doas" &> /dev/null ; then
-                doas cp man_page/upnup.1.gz /usr/share/man/man1/
-            else
-                sudo cp man_page/upnup.1.gz /usr/share/man/man1/
-            fi
-        else
-            read -e -r -p "upnup.1.gz already exists, would you like to overwrite man page?(y/n): " replaceman
-            if [[ "$replaceman" == "y" || "$replaceman" == "yes" ]] ; then
-                printf "%s\n" "installing man page in /usr/share/man/man1 ..."
-                if command -v "doas" &> /dev/null ; then
-                    doas cp man_page/upnup.1.gz /usr/share/man/man1/
-                else
-                    sudo cp man_page/upnup.1.gz /usr/share/man/man1/
-                fi
-            else
-                printf "%s\n" "install script exiting, no updates man page have been made ..."
-                exit 0
-            fi
-        fi
-    else
-        printf "%s\n" "/usr/share/man/man1 doesn't exist, copy upnup.1.gz to preferred man page directory manually"
-        exit 0
-    fi
+function uninstall_manfile() {
+    local sub file
+    sub="$1"; shift
+    for file in "$@"; do
+        [[ -e "$mandir/$sub/$file" ]] || continue
+        $__log $__elev rm -f "$mandir/$sub/$file" || error "failed to remove $mandir/$sub/$file"
+    done
 }
 
-changeowner
-install_upnup
-install_annota
-createconfig
-installman
+#
+# main routine
+# 
+
+case "$0" in
+    *uninstall*)
+        dependencycheck $__elev rm
+        uninstall_binfile upnup annota
+        uninstall_data
+        uninstall_manfile man1 upnup.1.gz # annota.1.gz ?
+        ;;
+    *)
+        changeowner
+        dependencycheck $__elev chown cp chmod mkdir date awk sed rm find sort
+        install_binfile upnup annotator/annota
+        install_data licenses headers annotator
+        install_manfile man1 man_page/*.1.gz
+        ;;
+esac
+
