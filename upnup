@@ -25,6 +25,8 @@ Examples:
  upnup -u "john doe" -y 2021 p bsd-3-clause
  upnup -f agpl-3.0 p src/test.js
  upnup -u "john doe" -y 2021 -f cc0-1.0 p src/main/file.py
+See man page for details:
+ man upnup
 EOM
     exit 0
 }
