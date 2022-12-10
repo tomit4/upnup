@@ -38,7 +38,7 @@ error() {
 
 orientate () {
     # locate the upnup directory
-    # Try from environment setting first 
+    # Try from environment setting first
     upnupdir="${UPNUP_DIR}"
     [[ -d "$upnupdir" ]] && continue
     # Try some common locations
@@ -58,7 +58,7 @@ main () {
     orientate
     args=("$@")
     user=$USER
-    year=$(date | awk -F ' ' '{ print $NF }')
+    year=$(date +%Y)
     # arrays for use with checks below
     license_list="$(find "$upnupdir/licenses" | sed 1d | awk -F '/' '{ print $NF }' | sort)"
     # for use with l flag
