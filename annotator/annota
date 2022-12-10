@@ -5,7 +5,6 @@
 # annota is intended to be used solely as a dependency for upnup
 # while annota can be used independent of upnup, that is not its intended use
 
-source "$HOME"/.config/upnup/annotator/checkfiletype
 
 printhelp () {
 cat << EOM
@@ -17,7 +16,32 @@ EOM
     exit 0
 }
 
+error() {
+    printf "error: %s\n" "$1" 1>&2
+    ${2:+exit $2}
+}
+
+orientate () {
+    # locate the upnup directory
+    # Try from environment setting first 
+    upnupdir="${UPNUP_DIR}"
+    [[ -d "$upnupdir" ]] && continue
+    # Try some common locations
+    local d
+    for d in $HOME/{.local/share,.config}/upnup /usr{,/local}/share/upnup /etc/upnup; do
+        if [[ -d "$d" ]]; then
+            upnupdir="$d"
+            return
+        fi
+    done
+    error "unable to locate upnup configuration directory"
+    echo "note: if you installed to a non-standard location, set the UPNUP_DIR environment variable to point to the {DATADIR}/upnup directory"
+    exit 5
+}
+
 annota () {
+    orientate
+    source "$upnupdir"/annotator/checkfiletype
     user=$USER
     year=$(date | awk -F ' ' '{ print $NF }')
     # if [projectname] is in header file, calling anotta from root directory

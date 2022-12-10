@@ -31,12 +31,36 @@ EOM
     exit 0
 }
 
+error() {
+    printf "error: %s\n" "$1" 1>&2
+    ${2:+exit $2}
+}
+
+orientate () {
+    # locate the upnup directory
+    # Try from environment setting first 
+    upnupdir="${UPNUP_DIR}"
+    [[ -d "$upnupdir" ]] && continue
+    # Try some common locations
+    local d
+    for d in $HOME/{.local/share,.config}/upnup /usr{,/local}/share/upnup /etc/upnup; do
+        if [[ -d "$d" ]]; then
+            upnupdir="$d"
+            return
+        fi
+    done
+    error "unable to locate upnup configuration directory"
+    echo "note: if you installed to a non-standard location, set the UPNUP_DIR environment variable to point to the {DATADIR}/upnup directory"
+    exit 5
+}
+
 main () {
+    orientate
     args=("$@")
     user=$USER
     year=$(date | awk -F ' ' '{ print $NF }')
     # arrays for use with checks below
-    license_list="$(find "$HOME"/.config/upnup/licenses | sed 1d | awk -F '/' '{ print $NF }' | sort)"
+    license_list="$(find "$upnupdir/licenses" | sed 1d | awk -F '/' '{ print $NF }' | sort)"
     # for use with l flag
     lcs_list=( agpl-3.0 apache-2.0 bsd-2-clause bsd-3-clause bsl-1.0 cc0-1.0 cc0-3.0 cc0-4.0 epl-2.0 gpl-2.0 gpl-3.0 lgpl-2.1 mit mpl-2.0 unlicense )
     # list of licensenses that have [year] and [fullname] fields
@@ -91,7 +115,7 @@ main () {
                         # passed to anotta as filetype)
                         filetype=$(printf "%s\n" "${args[$m]}" | awk -F '.' '{ print $NF }')
                         outputfile="${args[$m]}"
-                        annota block "${filetype}" "$HOME/.config/upnup/headers/${headerfile}" "${outputfile}" -u "${user}" -y "${year}"
+                        annota block "${filetype}" "$upnupdir/headers/${headerfile}" "${outputfile}" -u "${user}" -y "${year}"
                         exit 0
                     fi
                 fi
@@ -112,14 +136,14 @@ main () {
                 # adds $user and/or $year if the passed LICENSE file is in the $mod_list array
                 # more easily accomplished with sponge, but didn't want to include more depencies...
                 if [[ "${mod_list[*]}" =~ ${args[$j]} ]] ; then
-                    cp "$HOME"/.config/upnup/licenses/"${args[$j]}" ./tmp
+                    cp "$upnupdir"/licenses/"${args[$j]}" ./tmp
                     sed "0,/\[year\]/s/\[year\]/$year/" ./tmp > tmp2
                     sed "0,/\[fullname\]/s/\[fullname\]/$user/" ./tmp2 > LICENSE
                     rm tmp tmp2
                 # if the LICENSE file doesn't have [year] or [fullname] fields,
                 # it simply copies the LICENSE to this current directory
                 else
-                    cp "$HOME"/.config/upnup/licenses/"${args[$j]}" ./LICENSE
+                    cp "$upnupdir"/licenses/"${args[$j]}" ./LICENSE
                 fi
             exit 0
             fi
